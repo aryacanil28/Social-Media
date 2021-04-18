@@ -1,0 +1,55 @@
+<html >
+{% load static %}
+<title>AAdmug Style Homepage Design using HTML and CSS</title>
+<head>
+<link type="text/css" rel="stylesheet" href="{% static 'css/signup.css' %}" />
+</head>
+<body >
+    <div >
+        <div style="background-color:#0059ff ;">
+          <h1 style="color: white; padding: 0px 10px;">Edit Profile</h1>
+            <hr></div>
+      </div>
+ <div class="fb-header-base">
+ </div>
+ 
+ <div class="fb-header" style="position: fixed;">
+	<div id="img1" class="fb-header"><img src="{% static 'images/AAdmug-white.png' %}"  width="200px" style="color: white;"/></div>
+        <a href="{% url 'signin' %}"><p style="float:right; margin:30px 60px;color:white;">login</p></a>
+
+ </div>
+
+ <div class="fb-body" style="position: fixed;">
+	<div id="intro1" class="fb-body">AAdmug helps you 
+	 connect and share with the <br>
+	 people in your life.</div>
+
+            <div id="intro2" class="fb-body">Create an account</div>
+}            <div id="img2" class="fb-body"><img src="{% static 'images/connectbg.png' %}" /></div>
+            <div id="intro3" class="fb-body">It's free and always will be.</div>
+            <div id="form3" class="fb-body" style="background-color: rgb(255, 255, 255); width: 600px; height: 500px;box-shadow: 1px 0px 8px -3px rgb(95, 95, 95);border-radius: 10px; padding: 30px;">
+                <form action="" method="post">
+                {% csrf_token %}
+            <input placeholder="First Name" type="text" id="namebox" name="first_name" />
+            <input placeholder="Last Name" type="text" id="namebox" name="last_name" /> <br>
+            <input placeholder="Emai" type="text" id="mailbox" name="email"/><br>
+            <input placeholder="Re-enter email" type="text" id="mailbox"  name="confirm_email" /><br>
+            <input placeholder="Password" type="password" id="mailbox"  name="password"/><br>
+            <input type="date" id="namebox"  name="dob"/><br><br>
+            <input type="radio" id="r-b" value="male" name="gender" />Male
+            <input type="radio" id="r-b"  value="female" name="gender" />Female<br><br>
+            <p id="intro4">By clicking Create an account, you agree to
+            our Terms and that you have read our Data Policy, 
+            including our Cookie Use.</p>
+            <input type="submit" class="button2" value="Create an account" />
+                    </form>
+            <br><hr>
+            
+            </div>
+
+        </div>
+	 </div>
+<div class="fb-body-footer">
+</div>
+</body>
+</html>

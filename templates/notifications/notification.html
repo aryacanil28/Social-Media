@@ -1,0 +1,127 @@
+<html>
+{% load static %}
+
+<head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" integrity="sha512-iBBXm8fW90+nuLcSKlbmrPcLa0OT92xO1BIsZ+ywDWZCvqsWgccV3gFoRBv0z+8dLJgyAHIhR35VZc2oM/gI1w==" crossorigin="anonymous" />
+    <link type="text/css" rel="stylesheet" href="{% static 'css/profile.css' %}" />
+</head>
+<main>
+    <!-- <div id="device-bar-1">
+        <button></button>
+        <button></button>
+        <button></button>
+    </div> -->
+    <header>
+        <div class="tb" >
+            <div class="td" id="logo" style="width: 50px;">
+                <a href="{% url 'profile' %}"><img src="{% static 'images/l2.png' %}" alt="AAdmug" width="50px" ></a>
+            </div>
+            <div class="td" id="search-form">
+                <form method="get" action="#">
+                    <input type="text" placeholder="Search AAdmug">
+                    <button type="submit"><i class="material-icons"></i></button>
+                </form>
+            </div>
+            <!-- <div class="td" id="f-name-l"><span>Himalaya's facebook</span></div> -->
+            <div class="td" id="i-links">
+                <div class="tb">
+                    <div class="td" id="m-td">
+                        <div class="tb">
+                            <!-- <span class="td"><i class="material-icons">person_add</i></span>
+                            <span class="td"><i class="material-icons">chat_bubble</i></span> -->
+                             <span class="td"><a href="{% url 'posts' %}"><i class="fas fa-rss-square"></i></i></a></span>
+                            <span class="td m-active"><a href="{% url 'notifications' %}"><i class="far fa-bell"></i></i></a></span>
+                        </div>
+                    </div>
+                   
+                   
+                    <div class="td">
+                        <a href="{% url 'profile' %}" >
+                             <div class="circle" style="width:50px; height:50px;border-radius:100%;overflow: hidden;">
+                             <img src="{{ data.profile_pic.url }}" class="avatar img-circle  " style=" width:50px; height:50px;object-fit:cover;"  alt="avatar">
+                             </div>
+                        </a>
+                    </div>
+                     <div class="td">
+                        <a href="#">
+                            <i class="fas fa-sign-out-alt"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+   
+    <div id="main-content" style="padding-bottom: 100px;">
+        <div class="td"  style="padding: 20px 30px;display: flex; justify-content: center;align-items: center; flex-direction: column;">
+           
+                <div style="width: 80%; padding-top: 10px;">
+                    <div class="post">
+                        <div class="tb">
+                            <a href="#" class="td p-p-pic"> <div class="circle" style="width:50px; height:50px;border-radius:100%;overflow: hidden;">
+                             <img src="{{ data.profile_pic.url }}" class="avatar img-circle  " style=" width:50px; height:50px;object-fit:cover;"  alt="avatar">
+                             </div></a>
+                            <div class="td p-r-hdr">
+                                <div class="p-u-info">
+                                    <a href="#">Scope</a> shared a memory with <a href="#">Suffix</a> 
+                                </div>
+                                <div class="p-dt">
+                                    <i class="material-icons">calendar_today</i>
+                                    <span>January 28, 2015</span>
+                                </div>
+                            </div>
+                            <div class="td p-opt"><i class="material-icons">-></i></div>
+                        </div>
+                        <div style="height:50px;display: flex; justify-content: center;align-items: center;padding: 13px;">
+                            <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Facilis autem eligendi corporis voluptate nesciunt neque, ducimus, ipsam omnis in soluta assumenda delectus voluptas dolorum provident atque iusto totam est laborum!</p>
+                            <button style="background:#0059ff ;box-shadow: 1px 1px 10px -3px black; padding: 10px; margin:0px 10px;border-radius: 50px; outline: none; border: none;font-weight: 800;color: white;">Accept</button>
+                            <button style="background:#ff0000 ;box-shadow: 1px 1px 10px -3px black; padding: 10px;margin:0px 10px;border-radius: 50px; outline: none; border: none;font-weight: 800;color: white;">Reject</button>
+                          </div>
+                        <div>
+                            <div class="p-acts">
+                                <div class="p-act like"><i class="material-icons"></i><span></span></div>
+                                <div class="p-act comment"><i class="material-icons"></i><span></span></div>
+                                <div class="p-act share"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="width: 80%; padding-top: 10px;">
+                    <div class="post">
+                        <div class="tb">
+                            <a href="#" class="td p-p-pic"><img src="{% static 'images/avathar.png' %}" alt="Rajeev's profile pic"></a>
+                            <div class="td p-r-hdr">
+                                <div class="p-u-info">
+                                    <a href="#">Scope</a> shared a memory with <a href="#">Suffix</a> 
+                                </div>
+                                <div class="p-dt">
+                                    <i class="material-icons">calendar_today</i>
+                                    <span>January 28, 2015</span>
+                                </div>
+                            </div>
+                            <div class="td p-opt"><i class="material-icons">-></i></div>
+                        </div>
+                        <div style="height:50px;display: flex; justify-content: center;align-items: center;padding: 13px;">
+                            <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Facilis autem eligendi corporis voluptate nesciunt neque, ducimus, ipsam omnis in soluta assumenda delectus voluptas dolorum provident atque iusto totam est laborum!</p>
+                            <button style="background:#0059ff ;box-shadow: 1px 1px 10px -3px black; padding: 10px; margin:0px 10px;border-radius: 50px; outline: none; border: none;font-weight: 800;color: white;">Accept</button>
+                            <button style="background:#ff0000 ;box-shadow: 1px 1px 10px -3px black; padding: 10px;margin:0px 10px;border-radius: 50px; outline: none; border: none;font-weight: 800;color: white;">Reject</button>
+                          </div>
+                        <div>
+                            <div class="p-acts">
+                                <div class="p-act like"><i class="material-icons"></i><span></span></div>
+                                <div class="p-act comment"><i class="material-icons"></i><span></span></div>
+                                <div class="p-act share"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+        </div>
+    </div>
+    <div id="device-bar-2"></div>
+    <script>
+        var date = new Date();
+        document.getElementById('curr-year').innerHTML = date.getFullYear();
+    </script>
+</main>
+]</html>

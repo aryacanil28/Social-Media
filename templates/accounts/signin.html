@@ -1,0 +1,47 @@
+<html>
+{% load static %}
+<head>
+    <title>Facebook - log in or sign up</title>
+    <meta charset="utf-8">
+    <meta name="author" content="Vlad">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Facebook,fb,messenger">
+    <link rel="stylesheet" href="{% static 'css/login.css' %}">
+    <style>
+        .general{
+            background-size:70%;
+            height:100vh;
+            background-position:right;
+            background-repeat:no-repeat;
+            background-image: url("{% static 'images/logo2.png' %}");
+        }
+    </style>
+</head>
+<body>
+    <div class="general">
+    <img src="{% static 'images/AAdmug.png' %}" alt="AAdmug" >
+    <h2>AAdmug helps you connect and share <br> with the people in your life.</h2>
+    </div>
+    <div class="forms">
+    <form method="post" action="">
+        {% csrf_token %}
+        <div class="email">
+            <input name="email" id="field" type="email" placeholder="Email address">
+        </div>
+        <div class="password">
+            <input name="password" id="field"  type="password" placeholder="Password">
+        </div>
+        <div>
+            <button class="botton" type="submit" formtarget="_blank">Log In</button>
+        </div>
+        <div class="fgt">
+           <a class="forget" href="">Forgotten password?</a>
+        </div>
+        <div id="br"> <br> </div> 
+        <div class="acc">
+           <div> <botton><a class="newacc" id="new" href="{% url 'signup' %}">Create New Account</a></botton> </div>
+        </div>
+    </form>
+        <!-- <div class="newpage"><a class="create" href="signup.html"> Create a Page</a> for a celebrity, band or business.</div> -->
+    </div> 
+</html>
