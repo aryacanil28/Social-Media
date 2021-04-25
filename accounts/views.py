@@ -3,10 +3,12 @@ from django.contrib import messages
 from django.shortcuts import render,redirect,get_object_or_404,HttpResponse
 from django.views import View
 from django.contrib.auth.models import User
-from .models import Userdetails,Shield,Facelearn
+from .models import Userdetails
+from faceshield.models import Shield, Facelearn, FaceShieldDetails
 from django.contrib.auth import settings
 from django.contrib.auth.models import auth
 from django.contrib.auth.decorators import login_required
+from faceshield.views import faceAuthentification
 # Create your views here.
 
 class signup(View):
@@ -85,23 +87,53 @@ def logout(request):
 @login_required
 def editProfile(request):
     data = Userdetails.objects.get(user=request.user)
-    if Shield.objects.filter(user=request.user):
-        shield = Shield.objects.get_or_none(user=request.user)
+    print( Shield.objects.filter(user=request.user).exists())
+    if Shield.objects.filter(user=request.user).exists():
+        shield = Shield.objects.get(user=request.user)
         obj = Facelearn.objects.get(user=request.user)
         number_of_imgs = obj.number_of_images
         percent = (number_of_imgs*100)/20
+    else:
+        shield =None
+        number_of_imgs = 0
+        percent = 0
+
     if request.method == 'POST':
         data.profile_pic=request.FILES['newprofile']
         data.save()
+        fds = faceAuthentification()
+        result = fds.fds(request)
+        if result:
+            print('result', result)
+
+        else:
+            print('no match found')
+
     return render(request, 'accounts/edit-profile.html',{'data':data,'shield':shield,'number_of_imgs':number_of_imgs,'percent':percent })
 
 @login_required
 def activateShield(request):
-    shield = Shield.objects.get(user=request.user)
-    shield.active=True
+    if Shield.objects.filter(user=request.user).exists():
+        shield = Shield.objects.get(user=request.user)
+    else:
+        shield = Shield.objects.create(user=request.user)
+    obj,created = Facelearn.objects.get_or_create(user=request.user)
+
+
+    number_of_imgs = obj.number_of_images
+    if number_of_imgs < 14:
+        shield.pending = True
+    else:
+        shield.active = True
     shield.save()
-    obj = Facelearn.objects.get_or_create(user=request.user)
-    obj.save()
+
+    if created:
+        obj = Facelearn.objects.get(user=request.user)
+        obj.save()
+    else:
+        obj.save()
+
+
     return redirect('editProfile')
 
 @login_required
@@ -112,6 +144,7 @@ def deactivateShield(request):
     return redirect('editProfile')
 
 def uploadTrainingData(request):
+
     if request.method == 'POST':
         if Facelearn.objects.get(user=request.user):
             obj = Facelearn.objects.get(user=request.user)
@@ -129,7 +162,20 @@ def uploadTrainingData(request):
             elif number_of_imgs > 14:
                 shield.danger = False
                 shield.warning = False
+                shield.active=True
+                shield.pending = False
             shield.save()
+
+        if (shield.active) and (not FaceShieldDetails.objects.filter(user_fsd=request.user).exists()):
+                user_obj = User.objects.get(username=request.user)
+                obj1 = FaceShieldDetails()
+                obj1.user_fsd = user_obj
+                obj1.userdetails_fsd = Userdetails.objects.get(user = request.user)
+                obj1.shield_fsd  = Shield.objects.get(user = request.user)
+                obj1.facelearn_fsd  = Facelearn.objects.get(user = request.user)
+                obj1.folder_fsd = 's{}'.format(user_obj.id)
+                obj1.save()
+
 
         return redirect('editProfile')
 
