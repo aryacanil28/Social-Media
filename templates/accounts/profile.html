@@ -39,7 +39,12 @@
                         <a href="{% url 'profile' %}" >
 <!--                            <img src="{{ data.profile_pic.url }}">-->
                              <div class="circle" style="width:50px; height:50px;border-radius:100%;overflow: hidden;">
-                             <img src="{{ data.profile_pic.url }}" class="avatar img-circle  " style=" width:50px; height:50px;object-fit:cover;"  alt="avatar">
+                                 {% if data.Blur_dp %}
+                                 <img src="{{ blur_data.blur_image.url }}" class="avatar img-circle  " style=" width:50px; height:50px;object-fit:cover;"  alt="avatar">
+                                 {% else %}
+                                 <img src="{{ data.profile_pic.url }}" class="avatar img-circle  " style=" width:50px; height:50px;object-fit:cover;"  alt="avatar">
+                                 {% endif %}
+
                              </div>
                         </a>
                     </div>
@@ -61,7 +66,11 @@
         
         <div id="profile-d">
             <div id="profile-pic">
-                <img src="{{ data.profile_pic.url }}">
+                {% if data.Blur_dp %}
+                <img src="{{ blur_data.blur_image.url }}">
+                {% else %}
+                   <img src="{{ data.profile_pic.url }}">
+                {% endif %}
             </div>
             <div id="u-name">{{ data.user.first_name }}</div>
             <div class="tb" id="m-btns">
@@ -169,7 +178,12 @@
                     <div id="c-c-main">
                         <div class="tb">
                              <div class="circle" style="width:50px; height:50px;border-radius:100%;overflow: hidden;">
-                             <img src="{{ data.profile_pic.url }}" class="avatar img-circle  " style=" width:50px; height:50px;object-fit:cover;"  alt="avatar">
+                                  {% if data.Blur_dp %}
+                                 <img src="{{ blur_data.blur_image.url }}" class="avatar img-circle  " style=" width:50px; height:50px;object-fit:cover;"  alt="avatar">
+                                  {% else %}
+                                   <img src="{{ data.profile_pic.url }}" class="avatar img-circle  " style=" width:50px; height:50px;object-fit:cover;"  alt="avatar">
+                                  {% endif %}
+
                              </div>
                             <div class="td" id="c-inp">
                                 <input type="text" placeholder="What's on your mind?">
@@ -182,7 +196,11 @@
                     <div class="post">
                         <div class="tb">
                             <a href="#" class="td p-p-pic"> <div class="circle" style="width:50px; height:50px;border-radius:100%;overflow: hidden;">
-                             <img src="{{ data.profile_pic.url }}" class="avatar img-circle  " style=" width:50px; height:50px;object-fit:cover;"  alt="avatar">
+                              {% if data.Blur_dp %}
+                                 <img src="{{ blur_data.blur_image.url }}" class="avatar img-circle  " style=" width:50px; height:50px;object-fit:cover;"  alt="avatar">
+                                  {% else %}
+                                   <img src="{{ data.profile_pic.url }}" class="avatar img-circle  " style=" width:50px; height:50px;object-fit:cover;"  alt="avatar">
+                                  {% endif %}
                              </div></a>
                             <div class="td p-r-hdr">
                                 <div class="p-u-info">

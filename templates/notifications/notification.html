@@ -37,8 +37,13 @@
                    
                     <div class="td">
                         <a href="{% url 'profile' %}" >
-                             <div class="circle" style="width:50px; height:50px;border-radius:100%;overflow: hidden;">
-                             <img src="{{ data.profile_pic.url }}" class="avatar img-circle  " style=" width:50px; height:50px;object-fit:cover;"  alt="avatar">
+                              <div class="circle" style="width:50px; height:50px;border-radius:100%;overflow: hidden;">
+                                 {% if data.Blur_dp %}
+                                 <img src="{{ blur_data.blur_image.url }}" class="avatar img-circle  " style=" width:50px; height:50px;object-fit:cover;"  alt="avatar">
+                                 {% else %}
+                                 <img src="{{ data.profile_pic.url }}" class="avatar img-circle  " style=" width:50px; height:50px;object-fit:cover;"  alt="avatar">
+                                 {% endif %}
+
                              </div>
                         </a>
                     </div>
@@ -54,7 +59,8 @@
    
     <div id="main-content" style="padding-bottom: 100px;">
         <div class="td"  style="padding: 20px 30px;display: flex; justify-content: center;align-items: center; flex-direction: column;">
-           
+           {% if nfs %}
+            {% for notify in nfs %}
                 <div style="width: 80%; padding-top: 10px;">
                     <div class="post">
                         <div class="tb">
@@ -73,9 +79,9 @@
                             <div class="td p-opt"><i class="material-icons">-></i></div>
                         </div>
                         <div style="height:50px;display: flex; justify-content: center;align-items: center;padding: 13px;">
-                            <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Facilis autem eligendi corporis voluptate nesciunt neque, ducimus, ipsam omnis in soluta assumenda delectus voluptas dolorum provident atque iusto totam est laborum!</p>
-                            <button style="background:#0059ff ;box-shadow: 1px 1px 10px -3px black; padding: 10px; margin:0px 10px;border-radius: 50px; outline: none; border: none;font-weight: 800;color: white;">Accept</button>
-                            <button style="background:#ff0000 ;box-shadow: 1px 1px 10px -3px black; padding: 10px;margin:0px 10px;border-radius: 50px; outline: none; border: none;font-weight: 800;color: white;">Reject</button>
+                            <p>{{ notify.message }}</p>
+                            <a href="{% url 'accept' id=notify.notfication_id %}"><button style="background:#0059ff ;box-shadow: 1px 1px 10px -3px black; padding: 10px; margin:0px 10px;border-radius: 50px; outline: none; border: none;font-weight: 800;color: white;">Accept</button></a>
+                            <a href="{% url 'reject' id=notify.notfication_id %}"><button style="background:#ff0000 ;box-shadow: 1px 1px 10px -3px black; padding: 10px;margin:0px 10px;border-radius: 50px; outline: none; border: none;font-weight: 800;color: white;">Reject</button></a>
                           </div>
                         <div>
                             <div class="p-acts">
@@ -86,36 +92,37 @@
                         </div>
                     </div>
                 </div>
-
-                <div style="width: 80%; padding-top: 10px;">
-                    <div class="post">
-                        <div class="tb">
-                            <a href="#" class="td p-p-pic"><img src="{% static 'images/avathar.png' %}" alt="Rajeev's profile pic"></a>
-                            <div class="td p-r-hdr">
-                                <div class="p-u-info">
-                                    <a href="#">Scope</a> shared a memory with <a href="#">Suffix</a> 
-                                </div>
-                                <div class="p-dt">
-                                    <i class="material-icons">calendar_today</i>
-                                    <span>January 28, 2015</span>
-                                </div>
-                            </div>
-                            <div class="td p-opt"><i class="material-icons">-></i></div>
-                        </div>
-                        <div style="height:50px;display: flex; justify-content: center;align-items: center;padding: 13px;">
-                            <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Facilis autem eligendi corporis voluptate nesciunt neque, ducimus, ipsam omnis in soluta assumenda delectus voluptas dolorum provident atque iusto totam est laborum!</p>
-                            <button style="background:#0059ff ;box-shadow: 1px 1px 10px -3px black; padding: 10px; margin:0px 10px;border-radius: 50px; outline: none; border: none;font-weight: 800;color: white;">Accept</button>
-                            <button style="background:#ff0000 ;box-shadow: 1px 1px 10px -3px black; padding: 10px;margin:0px 10px;border-radius: 50px; outline: none; border: none;font-weight: 800;color: white;">Reject</button>
-                          </div>
-                        <div>
-                            <div class="p-acts">
-                                <div class="p-act like"><i class="material-icons"></i><span></span></div>
-                                <div class="p-act comment"><i class="material-icons"></i><span></span></div>
-                                <div class="p-act share"></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                {% endfor %}
+            {% endif %}
+<!--                <div style="width: 80%; padding-top: 10px;">-->
+<!--                    <div class="post">-->
+<!--                        <div class="tb">-->
+<!--                            <a href="#" class="td p-p-pic"><img src="{% static 'images/avathar.png' %}" alt="Rajeev's profile pic"></a>-->
+<!--                            <div class="td p-r-hdr">-->
+<!--                                <div class="p-u-info">-->
+<!--                                    <a href="#">Scope</a> shared a memory with <a href="#">Suffix</a> -->
+<!--                                </div>-->
+<!--                                <div class="p-dt">-->
+<!--                                    <i class="material-icons">calendar_today</i>-->
+<!--                                    <span>January 28, 2015</span>-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                            <div class="td p-opt"><i class="material-icons">-></i></div>-->
+<!--                        </div>-->
+<!--                        <div style="height:50px;display: flex; justify-content: center;align-items: center;padding: 13px;">-->
+<!--                            <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Facilis autem eligendi corporis voluptate nesciunt neque, ducimus, ipsam omnis in soluta assumenda delectus voluptas dolorum provident atque iusto totam est laborum!</p>-->
+<!--                            <button style="background:#0059ff ;box-shadow: 1px 1px 10px -3px black; padding: 10px; margin:0px 10px;border-radius: 50px; outline: none; border: none;font-weight: 800;color: white;">Accept</button>-->
+<!--                            <button style="background:#ff0000 ;box-shadow: 1px 1px 10px -3px black; padding: 10px;margin:0px 10px;border-radius: 50px; outline: none; border: none;font-weight: 800;color: white;">Reject</button>-->
+<!--                          </div>-->
+<!--                        <div>-->
+<!--                            <div class="p-acts">-->
+<!--                                <div class="p-act like"><i class="material-icons"></i><span></span></div>-->
+<!--                                <div class="p-act comment"><i class="material-icons"></i><span></span></div>-->
+<!--                                <div class="p-act share"></div>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                </div>-->
         </div>
     </div>
     <div id="device-bar-2"></div>

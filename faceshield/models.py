@@ -9,7 +9,13 @@ from accounts.models import Userdetails
 def get_upload_path(instance,*args,**kwargs):
     return os.path.join('face_training/s{0}/{1}'.format(instance.user.id,args[0]))
 
+def get_upload_blur_path(instance,*args,**kwargs):
+    return os.path.join('Blured/{}/'.format(instance.user.first_name))
 
+class BluredImages(models.Model):
+    blur_image_id = models.AutoField(primary_key=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    blur_image = models.FileField(upload_to=get_upload_blur_path, default=None, null=True)
 
 
 class Shield(models.Model):

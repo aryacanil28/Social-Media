@@ -12,7 +12,7 @@
   .bg-danger{background: red !important;}
   .bg-warning{background: rgb(255, 251, 0) !important;  color: black !important;}
   .bg-success{background: rgb(9, 255, 0) !important;  color: black !important;}
-  .circle{ width:200px; height:200px; border-radius:100%;background:red;overflow: hidden;margin:auto; margin-left:55px;}
+  .circle{ width:200px; height:200px; border-radius:100%;background:{% static 'images/avathar.png' %};overflow: hidden;margin:auto; margin-left:55px;}
   </style>
 </head>
 <div class="container-fluid">
@@ -20,7 +20,12 @@
      <a href="{% url 'profile' %}" style="float:right;margin:10px 40px;">
 
         <div class="circle" style="width:50px; height:50px;">
-            <img src="{{ data.profile_pic.url }}" class="avatar img-circle  " style=" width:50px; height:50px;object-fit:cover;"  alt="avatar">
+           {% if data.Blur_dp %}
+          <img src="{{ blur_data.blur_image.url }}" class="avatar img-circle  " style=" width:50px; height:50px;object-fit:cover;"  alt="avatar">
+          {% else %}
+          <img src="{{ data.profile_pic.url }}" class="avatar img-circle  " style=" width:50px; height:50px;object-fit:cover;"  alt="avatar">
+          {% endif %}
+
           </div>
 
 
@@ -38,12 +43,21 @@
         {% if shield.active %}
         <div class="text-center green ">
           <div class="circle shield-cover">
+            {% if data.Blur_dp %}
+            <img src="{{ blur_data.blur_image.url }}" class="avatar img-circle  " style=" width:200px; height:200px;object-fit:cover;"  alt="avatar">
+            {% else %}
             <img src="{{ data.profile_pic.url }}" class="avatar img-circle  " style=" width:200px; height:200px;object-fit:cover;"  alt="avatar">
+            {% endif %}
+
           </div>
           {% else %}
            <div class="text-center">
           <div class="circle">
+             {% if data.Blur_dp %}
+            <img src="{{ blur_data.blur_image.url }}" class="avatar img-circle  " style=" width:200px; height:200px;object-fit:cover;"  alt="avatar">
+            {% else %}
             <img src="{{ data.profile_pic.url }}" class="avatar img-circle  " style=" width:200px; height:200px;object-fit:cover;"  alt="avatar">
+            {% endif %}
           </div>
           {% endif %}
           <h6 style="margin-top:90px;">Upload a different photo...</h6>
@@ -60,45 +74,13 @@
             <a href="{% url 'deactivate-shield' %}">
              <button class="active" style="box-shadow: 1px 1px 10px -3px black; padding: 10px;border-radius: 50px; outline: none; border: none;font-weight: 800;">Deactivate Shield</button>
             </a>
-          {% elif shield.pending %}
-           <button class="pending-activation" style="box-shadow: 1px 1px 10px -3px black; padding: 10px;border-radius: 50px; outline: none; border: none;font-weight: 800;">Pending activation</button>
           {% else %}
            <a href="{% url 'activate-shield' %}">
            <button class="disabled" style="box-shadow: 1px 1px 10px -3px black; padding: 10px;border-radius: 50px; outline: none; border: none;font-weight: 800;color:white;">Activate Shield</button>
           </a>
           {% endif %}
         </div>
- {% if shield.active or shield.pending %}
-        <div>
 
-          <div class="progress">
-
-            {% if shield.danger %}
-            <div class="progress-bar  bg-danger" style="width:{{ percent }}%">
-              Less secure
-            </div>
-             {% elif shield.warning %}
-             <div class="progress-bar bg-warning" style="width:{{ percent }}%">
-              medium secure
-            </div>
-              {% else %}
-            <div class="progress-bar bg-success" style="width:{{ percent }}%">
-              highly secure
-            </div>
-            {% endif %}
-          </div>
-          <p>{{ number_of_imgs|default_if_none:'' }} images uploaded</p>
-        </div>
-            {% if number_of_imgs < 20 %}
-        <h6>Upload your 20 different looks.</h6>
-          <form  method="post" action="../upload-training-data/"  enctype="multipart/form-data">
-             {% csrf_token %}
-        <input type="file" class="form-control" name="face_training">
-        <p style="color: rgb(158, 158, 158);">one by one</p>
-        <button class="btn-primary" type="submit">Upload</button>
-            </form>
-             {% endif %}
-{% endif %}
       </div>
 
       <!-- edit form column -->
@@ -141,23 +123,7 @@
               <input class="form-control" type="text" value="{{ data.user.email }}">
             </div>
           </div>
-<!--          <div class="form-group">-->
-<!--            <label class="col-lg-3 control-label">Time Zone:</label>-->
-<!--            <div class="col-lg-8">-->
-<!--              <div class="ui-select">-->
-<!--                <select id="user_time_zone" class="form-control">-->
-<!--                  <option value="Hawaii">(GMT-10:00) Hawaii</option>-->
-<!--                  <option value="Alaska">(GMT-09:00) Alaska</option>-->
-<!--                  <option value="Pacific Time (US &amp; Canada)">(GMT-08:00) Pacific Time (US &amp; Canada)</option>-->
-<!--                  <option value="Arizona">(GMT-07:00) Arizona</option>-->
-<!--                  <option value="Mountain Time (US &amp; Canada)">(GMT-07:00) Mountain Time (US &amp; Canada)</option>-->
-<!--                  <option value="Central Time (US &amp; Canada)" selected="selected">(GMT-06:00) Central Time (US &amp; Canada)</option>-->
-<!--                  <option value="Eastern Time (US &amp; Canada)">(GMT-05:00) Eastern Time (US &amp; Canada)</option>-->
-<!--                  <option value="Indiana (East)">(GMT-05:00) Indiana (East)</option>-->
-<!--                </select>-->
-<!--              </div>-->
-<!--            </div>-->
-<!--          </div>-->
+
           <div class="form-group">
             <label class="col-md-3 control-label">Username:</label>
             <div class="col-md-8">

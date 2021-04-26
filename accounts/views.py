@@ -4,11 +4,12 @@ from django.shortcuts import render,redirect,get_object_or_404,HttpResponse
 from django.views import View
 from django.contrib.auth.models import User
 from .models import Userdetails
-from faceshield.models import Shield, Facelearn, FaceShieldDetails
+from faceshield.models import Shield, Facelearn, FaceShieldDetails, BluredImages
 from django.contrib.auth import settings
 from django.contrib.auth.models import auth
 from django.contrib.auth.decorators import login_required
 from faceshield.views import faceAuthentification
+from notifications.models import Notifications
 # Create your views here.
 
 class signup(View):
@@ -73,9 +74,15 @@ class profile(View):
     def get(self, request):
         # print(request.user.id)
         data = Userdetails.objects.get(user=request.user)
+        if BluredImages.objects.filter(user=request.user).exists():
+            blur_data=BluredImages.objects.filter(user=request.user)
+            blur_data=blur_data[len(blur_data)-1]
+            print(blur_data.blur_image.url)
+        else:
+            blur_data=None
         # print(data.id)
         # print(data.profile_pic.url)
-        return render(request, 'accounts/profile.html',{'data':data})
+        return render(request, 'accounts/profile.html',{'data':data,'blur_data':blur_data})
 
 
 
@@ -88,6 +95,14 @@ def logout(request):
 def editProfile(request):
     data = Userdetails.objects.get(user=request.user)
     print( Shield.objects.filter(user=request.user).exists())
+    # sending bluerd img if any
+    if BluredImages.objects.filter(user=request.user).exists():
+        blur_data = BluredImages.objects.filter(user=request.user)
+        blur_data = blur_data[len(blur_data) - 1]
+        print(blur_data.blur_image.url)
+    else:
+        blur_data = None
+
     if Shield.objects.filter(user=request.user).exists():
         shield = Shield.objects.get(user=request.user)
         obj = Facelearn.objects.get(user=request.user)
@@ -99,42 +114,82 @@ def editProfile(request):
         percent = 0
 
     if request.method == 'POST':
+        print(request.method)
         data.profile_pic=request.FILES['newprofile']
+        data.Blur_dp = False
         data.save()
-        fds = faceAuthentification()
-        result = fds.fds(request)
+        Notifications.objects.filter(sender=request.user.username,approved=False).delete()
+        fds = faceAuthentification(request)
+        result = fds.fds()
         if result:
             print('result', result)
+            for u_name in result:
+                if u_name != data.user.first_name:
+                    if User.objects.filter(first_name=u_name).exists():
+                        user = User.objects.get(first_name = u_name)
+                        obj_user = Shield.objects.get(user = user)
+                        print(obj_user.active)
+                        if obj_user.active:
+                            fds.bluring_faces(request)
+                            data.Blur_dp = True
+                            data.save()
 
+                            print("send  notification")
+                            msg = "{} uploaded a photo with a face similar to you, Please verify now.".format(request.user.username)
+                            Notifications.objects.create(reciver=user, sender=request.user.username, message=msg).save()
+
+                else:
+                    print('same user')
         else:
             print('no match found')
 
-    return render(request, 'accounts/edit-profile.html',{'data':data,'shield':shield,'number_of_imgs':number_of_imgs,'percent':percent })
+    return render(request, 'accounts/edit-profile.html',{'data':data,'shield':shield,'number_of_imgs':number_of_imgs,'percent':percent,'blur_data':blur_data })
 
+#shield with 1 image
 @login_required
 def activateShield(request):
-    if Shield.objects.filter(user=request.user).exists():
-        shield = Shield.objects.get(user=request.user)
-    else:
-        shield = Shield.objects.create(user=request.user)
-    obj,created = Facelearn.objects.get_or_create(user=request.user)
+        if Shield.objects.filter(user=request.user).exists():
+            shield = Shield.objects.get(user=request.user)
+        else:
+            shield = Shield.objects.create(user=request.user)
+        obj, created = Facelearn.objects.get_or_create(user=request.user)
 
-
-    number_of_imgs = obj.number_of_images
-    if number_of_imgs < 14:
-        shield.pending = True
-    else:
         shield.active = True
-    shield.save()
+        shield.save()
 
-    if created:
-        obj = Facelearn.objects.get(user=request.user)
-        obj.save()
-    else:
-        obj.save()
+        if created:
+            obj = Facelearn.objects.get(user=request.user)
+            obj.save()
+        else:
+            obj.save()
 
+        return redirect('editProfile')
 
-    return redirect('editProfile')
+#shield with 20 images
+# @login_required
+# def activateShield(request):
+#     if Shield.objects.filter(user=request.user).exists():
+#         shield = Shield.objects.get(user=request.user)
+#     else:
+#         shield = Shield.objects.create(user=request.user)
+#     obj,created = Facelearn.objects.get_or_create(user=request.user)
+#
+#
+#     number_of_imgs = obj.number_of_images
+#     if number_of_imgs < 14:
+#         shield.pending = True
+#     else:
+#         shield.active = True
+#     shield.save()
+#
+#     if created:
+#         obj = Facelearn.objects.get(user=request.user)
+#         obj.save()
+#     else:
+#         obj.save()
+#
+#
+#     return redirect('editProfile')
 
 @login_required
 def deactivateShield(request):
