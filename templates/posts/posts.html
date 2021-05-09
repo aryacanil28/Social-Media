@@ -58,67 +58,45 @@
     
     <div id="main-content">
         <div class="td"  style="padding: 20px 30px;display: flex; justify-content: center;align-items: center; flex-direction: column;">
-        
-            <div style="width: 80%;padding: 10px 0px;">
-                <div class="post">
-                    <div class="tb">
-                        <a href="#" class="td p-p-pic"> <div class="circle" style="width:50px; height:50px;border-radius:100%;overflow: hidden;">
-                             {% if data.Blur_dp %}
+                <div style="width: 80%;padding: 10px 0px;">
+                    {% for post in timeline %}
+                    <div class="post" style="margin-bottom:10px">
+
+                        <div class="tb">
+                            <a href="#" class="td p-p-pic"> <div class="circle" style="width:50px; height:50px;border-radius:100%;overflow: hidden;">
+                              {% if data.Blur_dp %}
                                  <img src="{{ blur_data.blur_image.url }}" class="avatar img-circle  " style=" width:50px; height:50px;object-fit:cover;"  alt="avatar">
                                   {% else %}
                                    <img src="{{ data.profile_pic.url }}" class="avatar img-circle  " style=" width:50px; height:50px;object-fit:cover;"  alt="avatar">
                                   {% endif %}
                              </div></a>
-                        <div class="td p-r-hdr">
-                            <div class="p-u-info">
-                                <a href="#">Suffix</a> shared a memory with <a href="#">Scope</a> 
-                            </div>
-                            <div class="p-dt">
-                                <i class="material-icons">calendar_today</i>
-                                <span>January 28, 2015</span>
-                            </div>
-                        </div>
-                        <div class="td p-opt"><i class="fas fa-ellipsis-h"></i></div>
-                    </div>
-                    <a href="#" class="p-cnt-v">
-                        <img src="{% static 'images/cover.jpg' %}">
-                    </a>
-                    <div>
-                        <div class="p-acts">
-                            <div class="p-act like"><i class="far fa-heart"></i><span>25</span></div>
-                            <div class="p-act comment"><i class="far fa-comment"></i><span>1</span></div>
-                            <div class="p-act share"><i class="far fa-share-square"></i></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-                <div style="width: 80%;padding: 10px 0px;">
-                    <div class="post">
-                        <div class="tb">
-                            <a href="#" class="td p-p-pic"><img src="{% static 'images/avathar.png' %}" alt="Rajeev's profile pic"></a>
                             <div class="td p-r-hdr">
                                 <div class="p-u-info">
-                                    <a href="#">Suffix</a> shared a memory with <a href="#">Scope</a> 
+                                    <a href="#">{{ post.post_owner }}</a> shared a memory with <a href="#">Scope</a>
                                 </div>
                                 <div class="p-dt">
-                                    <i class="material-icons">calendar_today</i>
-                                    <span>January 28, 2015</span>
+                                    <i class="material-icons">{{ post.posted_date }}</i>
+                                    <span>{{ post.posted_time }}</span>
                                 </div>
+
                             </div>
-                            <div class="td p-opt"><i class="fas fa-ellipsis-h"></i></div>
+                            <div class="td p-opt"><i class="material-icons">-></i></div>
                         </div>
+                         <div>
+                             <p>{{ post.post_text }}</p>
+                         </div>
                         <a href="#" class="p-cnt-v">
-                            <img src="{% static 'images/cover.jpg' %}">
+                            <img src="{{ post.post_image.url }}">
                         </a>
                         <div>
                             <div class="p-acts">
-                                <div class="p-act like"><i class="far fa-heart"></i><span>25</span></div>
+                                <div class="p-act like"><i class="far fa-heart"></i><span>{{ post.post_likes }}M</span></div>
                                 <div class="p-act comment"><i class="far fa-comment"></i><span>1</span></div>
                                 <div class="p-act share"><i class="far fa-share-square"></i></div>
                             </div>
                         </div>
                     </div>
+                    {% endfor %}
                 </div>
                 <div id="loading"><i class="material-icons">more...</i></div>
             </div>

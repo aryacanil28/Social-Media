@@ -12,7 +12,7 @@
         <button></button>
     </div> -->
     <header>
-        <div class="tb"  >
+        <div class="tb" >
             <div class="td" id="logo" style="width: 50px;">
                 <a href="{% url 'profile' %}"><img src="{% static 'images/l2.png' %}" alt="AAdmug" width="50px" ></a>
             </div>
@@ -160,7 +160,7 @@
                                 <div class="td"><i class="material-icons"></i><span>FRIENDS</span></div>
                                 <div class="td"><i class="material-icons"></i><span>PHOTOS</span></div>
                                 <div class="td"><i class="material-icons"></i><span>ABOUT</span></div>
-                                <div class="td"><i class="material-icons"></i><span>ARCHIVE</span></div>
+                                <div class="td"><i class="material-icons"></i><span></span></div>
                             </div>
                         </div>
                         <div class="td" id="p-tab-m"><i class="material-icons">></i></div>
@@ -168,12 +168,20 @@
                 </div>
                 <div class="m-mrg" id="composer">
                     <div id="c-tabs-cvr">
+                        <form method="post" action="{% url 'uploadPost' %}" enctype="multipart/form-data">
+                            {% csrf_token %}
                         <div class="tb" id="c-tabs">
                             <div class="td active"><i class="material-icons"></i><span>Make Post</span></div>
-                            <div class="td"><i class="material-icons"></i><span>Photo/Video</span></div>
+                            <div class="td"><i class="material-icons"></i><span onclick="upload()">Photo/Video</span><input id="up_post" type="file" name="post_image" style="display:none;"></div>
                             <div class="td"><i class="material-icons"></i><span>Live Video</span></div>
-                            <div class="td"><i class="material-icons"></i><span>Life Event</span></div>
+                            <div class="td"><i class=""></i><button type="submit" value="Post" style="background: #0059ff;color:white;border:none;padding:5px 15px;border-radius:15px;cursor:pointer;"><i class="fas fa-paper-plane"></i></button></div>
                         </div>
+
+                        <script>
+                            function upload(){
+                                document.getElementById('up_post').click()
+                            }
+                        </script>
                     </div>
                     <div id="c-c-main">
                         <div class="tb">
@@ -186,14 +194,18 @@
 
                              </div>
                             <div class="td" id="c-inp">
-                                <input type="text" placeholder="What's on your mind?">
+                                <input type="text" name="post_text" placeholder="What's on your mind?">
                             </div>
+                            <i
+                             </form>     
                         </div>
                         <div id="insert_emoji"><i class="material-icons"></i></div>
                     </div>
                 </div>
                 <div>
-                    <div class="post">
+                     {% for post in timeline %}
+                    <div class="post" style="margin-bottom:10px">
+
                         <div class="tb">
                             <a href="#" class="td p-p-pic"> <div class="circle" style="width:50px; height:50px;border-radius:100%;overflow: hidden;">
                               {% if data.Blur_dp %}
@@ -204,26 +216,31 @@
                              </div></a>
                             <div class="td p-r-hdr">
                                 <div class="p-u-info">
-                                    <a href="#">Suffix</a> shared a memory with <a href="#">Scope</a> 
+                                    <a href="#">{{ post.post_owner }}</a> shared a memory with <a href="#">Scope</a>
                                 </div>
                                 <div class="p-dt">
-                                    <i class="material-icons">calendar_today</i>
-                                    <span>January 28, 2021</span>
+                                    <i class="material-icons">{{ post.posted_date }}</i>
+                                    <span>{{ post.posted_time }}</span>
                                 </div>
+
                             </div>
                             <div class="td p-opt"><i class="material-icons">-></i></div>
                         </div>
+                         <div>
+                             <p>{{ post.post_text }}</p> 
+                         </div>
                         <a href="#" class="p-cnt-v">
-                            <img src="{% static 'images/cover.jpg' %}">
+                            <img src="{{ post.post_image.url }}">
                         </a>
                         <div>
                             <div class="p-acts">
-                                <div class="p-act like"><i class="material-icons">thumb_up_alt</i><span>25</span></div>
-                                <div class="p-act comment"><i class="material-icons">comment</i><span>1</span></div>
-                                <div class="p-act share"><i class="material-icons">reply</i></div>
+                                <div class="p-act like"><i class="far fa-heart"></i><span>{{ post.post_likes }}M</span></div>
+                                <div class="p-act comment"><i class="far fa-comment"></i><span>1</span></div>
+                                <div class="p-act share"><i class="far fa-share-square"></i></div>
                             </div>
                         </div>
                     </div>
+                    {% endfor %}
                 </div>
                 <div id="loading"><i class="material-icons">more...</i></div>
             </div>

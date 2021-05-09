@@ -3,6 +3,8 @@ from django.contrib import messages
 from django.shortcuts import render,redirect,get_object_or_404,HttpResponse
 from django.views import View
 from django.contrib.auth.models import User
+
+from posts.models import Posts
 from .models import Userdetails
 from faceshield.models import Shield, Facelearn, FaceShieldDetails, BluredImages
 from django.contrib.auth import settings
@@ -80,9 +82,12 @@ class profile(View):
             print(blur_data.blur_image.url)
         else:
             blur_data=None
+
+        timeline = Posts.objects.filter(post_owner=request.user.id)
+        timeline = reversed(timeline)
         # print(data.id)
         # print(data.profile_pic.url)
-        return render(request, 'accounts/profile.html',{'data':data,'blur_data':blur_data})
+        return render(request, 'accounts/profile.html',{'data':data,'blur_data':blur_data,'timeline':timeline})
 
 
 
@@ -119,8 +124,8 @@ def editProfile(request):
         data.Blur_dp = False
         data.save()
         Notifications.objects.filter(sender=request.user.username,approved=False).delete()
-        fds = faceAuthentification(request)
-        result = fds.fds()
+        fds = faceAuthentification(request,'profile_pic') #creating the faceAuthentification Object
+        result = fds.fds() #invocking the fd class
         if result:
             print('result', result)
             for u_name in result:
@@ -130,7 +135,7 @@ def editProfile(request):
                         obj_user = Shield.objects.get(user = user)
                         print(obj_user.active)
                         if obj_user.active:
-                            fds.bluring_faces(request)
+                            fds.bluring_faces(request,'profile_pic')
                             data.Blur_dp = True
                             data.save()
 

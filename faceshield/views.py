@@ -5,6 +5,7 @@ from django.contrib.auth.models import User
 from django.shortcuts import render,HttpResponse
 from django.views import View
 from accounts.models import Userdetails
+from posts.models import BluredPost, Posts
 from .models import FaceShieldDetails, BluredImages
 
 import os
@@ -18,12 +19,22 @@ import cv2 as cv
 
 class faceAuthentification(View):
 
-    def __init__(self,request):
+    def __init__(self,request,type):
         self.user = Userdetails.objects.get(user=request.user)
-        self.img = (str(self.user.profile_pic).split('/'))[1]
-        self.load_image = os.path.join(settings.MEDIA_ROOT, 'profile-pic\{}'.format(self.img))
         self.blur_areas=[]
         self.usersnames = []
+        if type == 'profile_pic':
+            self.img = (str(self.user.profile_pic).split('/'))[1]
+            # getting the path of uploaded profile img
+            self.load_image = os.path.join(settings.MEDIA_ROOT, 'profile-pic\{}'.format(self.img))
+        else:
+            self.latest_post = Posts.objects.filter(post_owner = request.user)
+            print((self.latest_post[len(self.latest_post)-1]).post_id)
+            self.post_id = (self.latest_post[len(self.latest_post)-1]).post_id
+            print(self.latest_post[len(self.latest_post)-1].post_image,'***')
+            self.img = (str(self.latest_post[len(self.latest_post)-1].post_image).split('/'))[1]
+            #getting the path of uploaded post img
+            self.load_image = os.path.join(settings.MEDIA_ROOT, 'post_images\{}'.format(self.img))
 
     def fds(self):
         # user = Userdetails.objects.get(user = request.user)
@@ -89,35 +100,69 @@ class faceAuthentification(View):
             print("persons found", self.usersnames)
         return self.usersnames
 
-    def bluring_faces(self,request):
+    def save_blured_image(self, request, folder_name, photo, type):
+
+        img_blur_path = os.path.join(settings.MEDIA_ROOT, '{0}\\'.format(folder_name))
+        img_blur_path2 = '/{1}/{0}-{2}.jpg'.format(request.user.username, folder_name, self.post_id)
+        print(img_blur_path)
+
+        if type == 'profile_pic':
+            cv.imwrite(os.path.join(img_blur_path, '{}.jpg'.format(request.user.username)), photo)
+        else:
+            cv.imwrite(os.path.join(img_blur_path, '{0}-{1}.jpg'.format(request.user.username, self.post_id)), photo)
+
+        cv.waitKey(0)
+        print(img_blur_path)
+        user = User.objects.get(username=request.user)
+        if type == 'profile_pic':
+            BI = BluredImages.objects.create(user=user, blur_image=img_blur_path2)
+            BI.save()
+        elif type == 'post_image':
+            print(img_blur_path2,type)
+            BP = BluredPost.objects.create(user=user, blur_post=img_blur_path2)
+            BP.save()
+        else:
+            pass
+
+    def bluring_faces(self,request,type):
         face_location = face_recognition.face_locations(self.target_image)
         # Blur all face
-        photo = cv.imread(self.load_image)
+        self.photo = cv.imread(self.load_image)
 
         for top, right, bottom, left in self.blur_areas:
             # Scale back up face locations since the frame we detected in was scaled to 1/zoom_in size
 
             # Extract the region of the image that contains the face
-            face_image = photo[top:bottom, left:right]
+            face_image = self.photo[top:bottom, left:right]
 
             # Blur the face image
             face_image = cv.GaussianBlur(face_image, (61, 61), 0)
 
             # Put the blurred face region back into the frame image
-            photo[top:bottom, left:right] = face_image
+            self.photo[top:bottom, left:right] = face_image
+
 
         # Save image to file
-        img_blur_path = os.path.join(settings.MEDIA_ROOT,'blured\\')
-        img_blur_path2 = '/blured/{}.jpg'.format(request.user.username)
-        print(img_blur_path)
-        cv.imwrite(os.path.join(img_blur_path,'{}.jpg'.format(request.user.username)), photo)
-        cv.waitKey(0)
-        print(img_blur_path)
-        user = User.objects.get(username=request.user)
-        BI = BluredImages.objects.create(user=user,blur_image=img_blur_path2)
-        BI.save()
+        if type == 'profile_pic':
+            self.save_blured_image(request, 'blured', self.photo, type)
+            # img_blur_path = os.path.join(settings.MEDIA_ROOT,'blured\\')
+            # img_blur_path2 = '/blured/{}.jpg'.format(request.user.username)
+            # print(img_blur_path)
+            # cv.imwrite(os.path.join(img_blur_path,'{}.jpg'.format(request.user.username)), self.photo)
+            # cv.waitKey(0)
+            # print(img_blur_path)
+            # user = User.objects.get(username=request.user)
+            # BI = BluredImages.objects.create(user=user,blur_image=img_blur_path2)
+            # BI.save()
 
-        # cv.waitKey(0)
+        elif type == 'post_image':
+            self.save_blured_image(request, 'blured-post', self.photo, type)
+        else:
+            pass
+
+
+
+
 
 
 

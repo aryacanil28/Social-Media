@@ -17,6 +17,11 @@ class BluredImages(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     blur_image = models.FileField(upload_to=get_upload_blur_path, default=None, null=True)
 
+    class Meta:
+        verbose_name_plural = "Blured Images Details"
+
+    def __str__(self):
+        return self.user.username
 
 class Shield(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
