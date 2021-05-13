@@ -2,6 +2,7 @@
 
 1. install visual studio community edition
   - tick and download/install C++ desktop application
+<img src="https://github.com/BAnanthu/Social-Media/blob/master/Screenshots/Screenshot%20(91).png" width="70%">
   
 2. pip install -r requirements.txt
 
