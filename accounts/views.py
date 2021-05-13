@@ -12,6 +12,7 @@ from django.contrib.auth.models import auth
 from django.contrib.auth.decorators import login_required
 from faceshield.views import faceAuthentification
 from notifications.models import Notifications
+from posts.models import Posts,BluredPost
 # Create your views here.
 
 class signup(View):
@@ -84,10 +85,15 @@ class profile(View):
             blur_data=None
 
         timeline = Posts.objects.filter(post_owner=request.user.id)
+        print(timeline)
+        BluredPosts = BluredPost.objects.filter(user=request.user)
+        print(BluredPosts)
         timeline = reversed(timeline)
+        print(timeline)
+
         # print(data.id)
         # print(data.profile_pic.url)
-        return render(request, 'accounts/profile.html',{'data':data,'blur_data':blur_data,'timeline':timeline})
+        return render(request, 'accounts/profile.html',{'data':data,'blur_data':blur_data,'timeline':timeline,'BluredPosts':BluredPosts})
 
 
 
@@ -126,25 +132,35 @@ def editProfile(request):
         Notifications.objects.filter(sender=request.user.username,approved=False).delete()
         fds = faceAuthentification(request,'profile_pic') #creating the faceAuthentification Object
         result = fds.fds() #invocking the fd class
-        if result:
+        if data.user.first_name in result:
+            result.remove(data.user.first_name)
+            print(result)
+        if len(result)>0:
             print('result', result)
+
             for u_name in result:
+                print(u_name)
                 if u_name != data.user.first_name:
                     if User.objects.filter(first_name=u_name).exists():
                         user = User.objects.get(first_name = u_name)
-                        obj_user = Shield.objects.get(user = user)
-                        print(obj_user.active)
-                        if obj_user.active:
-                            fds.bluring_faces(request,'profile_pic')
-                            data.Blur_dp = True
-                            data.save()
+                        if Shield.objects.filter(user=user).exists():
+                            obj_user = Shield.objects.get(user=user)
+                            print(obj_user.active)
+                            if obj_user.active:
+                                fds.bluring_faces(request, 'profile_pic')
+                                data.Blur_dp = True
+                                data.save()
 
-                            print("send  notification")
-                            msg = "{} uploaded a photo with a face similar to you, Please verify now.".format(request.user.username)
-                            Notifications.objects.create(reciver=user, sender=request.user.username, message=msg).save()
+                                print("send  notification")
+                                msg = "{} uploaded a photo with a face similar to you, Please verify now.".format(
+                                    request.user.username)
+                                Notifications.objects.create(reciver=user, sender=request.user.username,
+                                                             message=msg).save()
+
 
                 else:
                     print('same user')
+
         else:
             print('no match found')
 

@@ -5,8 +5,9 @@ from django.contrib.auth.decorators import login_required
 from accounts.models import Userdetails
 from faceshield.models import BluredImages, Shield
 from faceshield.views import faceAuthentification
-from notifications.models import Notifications
-from .models import Posts
+from notifications.models import Notifications, PostNotifications
+from .models import Posts, BluredPost
+
 
 @login_required
 def posts(request):
@@ -18,9 +19,10 @@ def posts(request):
     else:
         blur_data = None
 
-    timeline = Posts.objects.filter(post_owner=request.user.id)
+    timeline = Posts.objects.all()
+    BluredPosts = BluredPost.objects.all()
     timeline = reversed(timeline)
-    return render(request, 'posts/posts.html',{'data':data,'blur_data':blur_data,'timeline':timeline})
+    return render(request, 'posts/posts.html',{'data':data,'blur_data':blur_data,'timeline':timeline,'BluredPosts':BluredPosts})
 
 @login_required
 def uploadPost(request):
@@ -44,20 +46,21 @@ def uploadPost(request):
                     if u_name != data.user.first_name:
                         if User.objects.filter(first_name=u_name).exists():
                             user = User.objects.get(first_name=u_name)
-                            obj_user = Shield.objects.get(user=user)
-                            print(obj_user.active)
-                            if obj_user.active:
-                                fds_post.bluring_faces(request,'post_image')
-                                post_ob = Posts.objects.filter(post_owner=request.user)
-                                latest_pst = post_ob[len(post_ob)-1]
-                                latest_pst.is_blur_post = True
-                                latest_pst.save()
+                            if Shield.objects.filter(user=user).exists():
+                                obj_user = Shield.objects.get(user=user)
+                                print(obj_user.active)
+                                if obj_user.active:
+                                    fds_post.bluring_faces(request, 'post_image', post)
+                                    post_ob = Posts.objects.filter(post_owner=request.user)
+                                    latest_pst = post_ob[len(post_ob) - 1]
+                                    latest_pst.is_blur_post = True
+                                    latest_pst.save()
 
-                                print("send  notification")
-                                msg = "{} Posted a photo with a face similar to you, Please verify now.".format(
-                                    request.user.username)
-                                Notifications.objects.create(reciver=user, sender=request.user.username,
-                                                             message=msg).save()
+                                    print("send  notification")
+                                    msg = "{} Posted a photo with a face similar to you, Please verify now.".format(
+                                        request.user.username)
+                                    PostNotifications.objects.create(reciver=user, sender=request.user.username,
+                                                                 message=msg,post_id=post).save()
 
         else:
             return redirect('profile')

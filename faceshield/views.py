@@ -20,6 +20,7 @@ import cv2 as cv
 class faceAuthentification(View):
 
     def __init__(self,request,type):
+        self.request = request
         self.user = Userdetails.objects.get(user=request.user)
         self.blur_areas=[]
         self.usersnames = []
@@ -63,6 +64,7 @@ class faceAuthentification(View):
 
     def find_target_face(self,target_image, target_encoding):
         face_location = face_recognition.face_locations(target_image)
+
         x = self.encode_facess(os.path.join(settings.MEDIA_ROOT, 'face_training\\'))
         found_labels = []
         not_found = []
@@ -82,10 +84,14 @@ class faceAuthentification(View):
                 for location in face_location:
                     if is_target_face[face_number]:
                         label = filename
-                        self.blur_areas.append(location)
-                        # create_frame(location,label)
-                        print(location, label)
-                        found_labels.append(label)
+                        print(label.split('.')[0])
+                        if self.request.user.first_name in label.split('.')[0]:
+                           continue
+                        else:
+                            self.blur_areas.append(location)
+                            # create_frame(location,label)
+                            print(location, label)
+                            found_labels.append(label)
                     face_number += 1
 
         print(not_found)
@@ -100,31 +106,35 @@ class faceAuthentification(View):
             print("persons found", self.usersnames)
         return self.usersnames
 
-    def save_blured_image(self, request, folder_name, photo, type):
+    def save_blured_image(self, request, folder_name, photo, type,post=None):
 
         img_blur_path = os.path.join(settings.MEDIA_ROOT, '{0}\\'.format(folder_name))
-        img_blur_path2 = '/{1}/{0}-{2}.jpg'.format(request.user.username, folder_name, self.post_id)
+
         print(img_blur_path)
 
         if type == 'profile_pic':
+            img_blur_path2 = '/blured/{}.jpg'.format(request.user.username)
             cv.imwrite(os.path.join(img_blur_path, '{}.jpg'.format(request.user.username)), photo)
         else:
+            img_blur_path2 = '/{1}/{0}-{2}.jpg'.format(request.user.username, folder_name, self.post_id)
             cv.imwrite(os.path.join(img_blur_path, '{0}-{1}.jpg'.format(request.user.username, self.post_id)), photo)
 
         cv.waitKey(0)
         print(img_blur_path)
         user = User.objects.get(username=request.user)
         if type == 'profile_pic':
+            print('type profile_pic save')
             BI = BluredImages.objects.create(user=user, blur_image=img_blur_path2)
             BI.save()
         elif type == 'post_image':
+            print('type post_image save')
             print(img_blur_path2,type)
-            BP = BluredPost.objects.create(user=user, blur_post=img_blur_path2)
+            BP = BluredPost.objects.create(user=user, blur_post=img_blur_path2,post_id=post)
             BP.save()
         else:
             pass
 
-    def bluring_faces(self,request,type):
+    def bluring_faces(self,request,type,post=None):
         face_location = face_recognition.face_locations(self.target_image)
         # Blur all face
         self.photo = cv.imread(self.load_image)
@@ -144,6 +154,7 @@ class faceAuthentification(View):
 
         # Save image to file
         if type == 'profile_pic':
+            print('type profile_pic')
             self.save_blured_image(request, 'blured', self.photo, type)
             # img_blur_path = os.path.join(settings.MEDIA_ROOT,'blured\\')
             # img_blur_path2 = '/blured/{}.jpg'.format(request.user.username)
@@ -156,7 +167,8 @@ class faceAuthentification(View):
             # BI.save()
 
         elif type == 'post_image':
-            self.save_blured_image(request, 'blured-post', self.photo, type)
+            print('type post_image')
+            self.save_blured_image(request, 'blured-post', self.photo, type,post)
         else:
             pass
 

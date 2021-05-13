@@ -94,6 +94,42 @@
                 </div>
                 {% endfor %}
             {% endif %}
+
+            {% if post_notifications %}
+            {% for post_notify in post_notifications %}
+                <div style="width: 80%; padding-top: 10px;">
+                    <div class="post">
+                        <div class="tb">
+                            <a href="#" class="td p-p-pic"> <div class="circle" style="width:50px; height:50px;border-radius:100%;overflow: hidden;">
+                             <img src="{{ data.profile_pic.url }}" class="avatar img-circle  " style=" width:50px; height:50px;object-fit:cover;"  alt="avatar">
+                             </div></a>
+                            <div class="td p-r-hdr">
+                                <div class="p-u-info">
+                                    <a href="#">Scope</a> shared a memory with <a href="#">Suffix</a>
+                                </div>
+                                <div class="p-dt">
+                                    <i class="material-icons">calendar_today</i>
+                                    <span>January 28, 2015</span>
+                                </div>
+                            </div>
+                            <div class="td p-opt"><i class="material-icons">-></i></div>
+                        </div>
+                        <div style="height:50px;display: flex; justify-content: center;align-items: center;padding: 13px;">
+                            <p>{{ post_notify.message }}</p>
+                            <a href="{% url 'post-accept' id=post_notify.notfication_id %}"><button style="background:#0059ff ;box-shadow: 1px 1px 10px -3px black; padding: 10px; margin:0px 10px;border-radius: 50px; outline: none; border: none;font-weight: 800;color: white;">Accept</button></a>
+                            <a href="{% url 'post-reject' id=post_notify.notfication_id %}"><button style="background:#ff0000 ;box-shadow: 1px 1px 10px -3px black; padding: 10px;margin:0px 10px;border-radius: 50px; outline: none; border: none;font-weight: 800;color: white;">Reject</button></a>
+                          </div>
+                        <div>
+                            <div class="p-acts">
+                                <div class="p-act like"><i class="material-icons"></i><span></span></div>
+                                <div class="p-act comment"><i class="material-icons"></i><span></span></div>
+                                <div class="p-act share"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            {% endif %}
 <!--                <div style="width: 80%; padding-top: 10px;">-->
 <!--                    <div class="post">-->
 <!--                        <div class="tb">-->

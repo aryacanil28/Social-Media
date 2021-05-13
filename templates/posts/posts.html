@@ -86,7 +86,15 @@
                              <p>{{ post.post_text }}</p>
                          </div>
                         <a href="#" class="p-cnt-v">
+                            {% if post.is_blur_post %}
+                                {% for BluredPost in BluredPosts %}
+                                {% if BluredPost.post_id.post_id == post.post_id %}
+                                    <img src="{{ BluredPost.blur_post.url }}">
+                                {% endif %}
+                                {% endfor %}
+                            {% else %}
                             <img src="{{ post.post_image.url }}">
+                            {% endif %}
                         </a>
                         <div>
                             <div class="p-acts">
