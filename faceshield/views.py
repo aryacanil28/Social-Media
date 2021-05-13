@@ -6,7 +6,7 @@ from django.shortcuts import render,HttpResponse
 from django.views import View
 from accounts.models import Userdetails
 from posts.models import BluredPost, Posts
-from .models import FaceShieldDetails, BluredImages
+from .models import FaceShieldDetails, BluredImages, FacelearnUpload
 
 import os
 import face_recognition
@@ -171,8 +171,6 @@ class faceAuthentification(View):
             self.save_blured_image(request, 'blured-post', self.photo, type,post)
         else:
             pass
-
-
 
 
 

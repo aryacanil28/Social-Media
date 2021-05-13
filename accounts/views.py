@@ -6,7 +6,7 @@ from django.contrib.auth.models import User
 
 from posts.models import Posts
 from .models import Userdetails
-from faceshield.models import Shield, Facelearn, FaceShieldDetails, BluredImages
+from faceshield.models import Shield, Facelearn, FaceShieldDetails, BluredImages, FacelearnUpload
 from django.contrib.auth import settings
 from django.contrib.auth.models import auth
 from django.contrib.auth.decorators import login_required
@@ -91,7 +91,8 @@ class profile(View):
         timeline = reversed(timeline)
         print(timeline)
 
-        # print(data.id)
+
+           # print(data.id)
         # print(data.profile_pic.url)
         return render(request, 'accounts/profile.html',{'data':data,'blur_data':blur_data,'timeline':timeline,'BluredPosts':BluredPosts})
 
@@ -132,31 +133,25 @@ def editProfile(request):
         Notifications.objects.filter(sender=request.user.username,approved=False).delete()
         fds = faceAuthentification(request,'profile_pic') #creating the faceAuthentification Object
         result = fds.fds() #invocking the fd class
-        if data.user.first_name in result:
-            result.remove(data.user.first_name)
-            print(result)
-        if len(result)>0:
-            print('result', result)
+        print(result,'**********************')
+        for u_name in result:
+            print(u_name)
+            if u_name != data.user.first_name:
+                if User.objects.filter(first_name=u_name).exists():
+                    user = User.objects.get(first_name=u_name)
+                    if Shield.objects.filter(user=user).exists():
+                        obj_user = Shield.objects.get(user=user)
+                        print(obj_user.active)
+                        if obj_user.active:
+                            fds.bluring_faces(request, 'profile_pic')
+                            data.Blur_dp = True
+                            data.save()
 
-            for u_name in result:
-                print(u_name)
-                if u_name != data.user.first_name:
-                    if User.objects.filter(first_name=u_name).exists():
-                        user = User.objects.get(first_name = u_name)
-                        if Shield.objects.filter(user=user).exists():
-                            obj_user = Shield.objects.get(user=user)
-                            print(obj_user.active)
-                            if obj_user.active:
-                                fds.bluring_faces(request, 'profile_pic')
-                                data.Blur_dp = True
-                                data.save()
-
-                                print("send  notification")
-                                msg = "{} uploaded a photo with a face similar to you, Please verify now.".format(
-                                    request.user.username)
-                                Notifications.objects.create(reciver=user, sender=request.user.username,
-                                                             message=msg).save()
-
+                            print("send  notification")
+                            msg = "{} uploaded a photo with a face similar to you, Please verify now.".format(
+                                request.user.username)
+                            Notifications.objects.create(reciver=user, sender=request.user.username,
+                                                         message=msg).save()
 
                 else:
                     print('same user')
@@ -164,7 +159,13 @@ def editProfile(request):
         else:
             print('no match found')
 
-    return render(request, 'accounts/edit-profile.html',{'data':data,'shield':shield,'number_of_imgs':number_of_imgs,'percent':percent,'blur_data':blur_data })
+    if FacelearnUpload.objects.filter(user=request.user).exists():
+
+        fu_obj = FacelearnUpload.objects.get(user=request.user)
+        is_display_upload = fu_obj.display_upload
+    else:
+        is_display_upload = True
+    return render(request, 'accounts/edit-profile.html',{'data':data,'shield':shield,'number_of_imgs':number_of_imgs,'percent':percent,'blur_data':blur_data,'is_display_upload':is_display_upload })
 
 #shield with 1 image
 @login_required
@@ -260,3 +261,14 @@ def uploadTrainingData(request):
        #  return redirect('editProfile')
 
     return redirect('editProfile')
+
+
+def facelearn_upload(request):
+   if request.method == "POST":
+       img_obj = FacelearnUpload()
+       img_obj.user = request.user
+       img_obj.face_training_pic = request.FILES['face_training_pic']
+       img_obj.display_upload=False
+       img_obj.save()
+
+   return redirect('editProfile')

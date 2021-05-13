@@ -10,5 +10,7 @@ urlpatterns = [
     path('edit-profile/', views.editProfile, name='editProfile'),
     path('activate-shield/',views.activateShield,name='activate-shield'),
     path('deactivate-shield/',views.deactivateShield,name='deactivate-shield'),
-    path('upload-training-data/', views.uploadTrainingData, name='uploadTrainingData')
+    # path('upload-training-data/', views.uploadTrainingData, name='uploadTrainingData')
+    path('facelearn-upload/',views.facelearn_upload,name='facelearn-upload'),
+
 ]

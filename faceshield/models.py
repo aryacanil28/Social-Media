@@ -6,8 +6,15 @@ from django.contrib.auth.models import User
 from accounts.models import Userdetails
 # Create your models here.
 
-def get_upload_path(instance,*args,**kwargs):
-    return os.path.join('face_training/s{0}/{1}'.format(instance.user.id,args[0]))
+# def get_upload_path(instance,*args,**kwargs):
+#     return os.path.join('face_training/s{0}/{1}'.format(instance.user.id,args[0]))
+
+def get_upload_path(instance,filename):
+    ext = filename.split('.')[-1]
+    print(filename)
+    print(ext)
+    # filename = "%s.%s" % (uuid.uuid4(), ext)
+    return os.path.join('face_training/{0}.{1}'.format(instance.user.first_name,ext))
 
 def get_upload_blur_path(instance,*args,**kwargs):
     return os.path.join('Blured/{}/'.format(instance.user.first_name))
@@ -62,3 +69,17 @@ class FaceShieldDetails(models.Model):
 
     def __str__(self):
         return self.user_fsd.username
+
+
+
+
+class FacelearnUpload(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    face_training_pic = models.FileField(upload_to=get_upload_path, default=None, null=True)
+    display_upload = models.BooleanField(('upload pic'), default=True)
+
+    class Meta:
+        verbose_name_plural = "Facelearn Faces Images"
+
+    def __str__(self):
+        return self.user.first_name

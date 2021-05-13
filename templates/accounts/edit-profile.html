@@ -80,6 +80,14 @@
           </a>
           {% endif %}
         </div>
+          {% if is_display_upload %}
+          <h6 style="margin-top:90px;">Upload your Real Image</h6>
+          <form method="post" action="{% url 'facelearn-upload' %}" enctype="multipart/form-data">
+            {% csrf_token %}
+             <input type="file" class="form-control" name="face_training_pic">
+             <button class="btn-primary" type="submit" style="width:100%;">Upload</button>
+          </form>
+          {% endif %}
 
       </div>
 
