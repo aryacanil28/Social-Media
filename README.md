@@ -1,7 +1,7 @@
 # Social-Media
 
 1. install visual studio community edition
-  - tick and downloaad/install C++ desktop application
+  - tick and download/install C++ desktop application
   
 2. pip install -r requirements.txt
 
