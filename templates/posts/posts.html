@@ -17,8 +17,9 @@
                 <a href="{% url 'profile' %}"><img src="{% static 'images/l2.png' %}" alt="AAdmug" width="50px" ></a>
             </div>
             <div class="td" id="search-form">
-                <form method="get" action="#">
-                    <input type="text" placeholder="Search ">
+              <form method="post" action="{% url 'search' %}">
+                    {% csrf_token %}
+                    <input type="text" placeholder="Search AAdmug" name="name">
                     <button type="submit"><i class="fa fa-search" aria-hidden="true"></i></button>
                 </form>
             </div>
@@ -47,7 +48,7 @@
                         </a>
                     </div>
                      <div class="td">
-                        <a href="#">
+                       <a href="{% url 'logout' %}">
                             <i class="fas fa-sign-out-alt"></i>
                         </a>
                     </div>
@@ -65,14 +66,14 @@
                         <div class="tb">
                             <a href="#" class="td p-p-pic"> <div class="circle" style="width:50px; height:50px;border-radius:100%;overflow: hidden;">
                               {% if data.Blur_dp %}
-                                 <img src="{{ blur_data.blur_image.url }}" class="avatar img-circle  " style=" width:50px; height:50px;object-fit:cover;"  alt="avatar">
+                                 <img src="https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png" class="avatar img-circle  " style=" width:50px; height:50px;object-fit:cover;"  alt="avatar">
                                   {% else %}
-                                   <img src="{{ data.profile_pic.url }}" class="avatar img-circle  " style=" width:50px; height:50px;object-fit:cover;"  alt="avatar">
+                                   <img src="https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png" class="avatar img-circle  " style=" width:50px; height:50px;object-fit:cover;"  alt="avatar">
                                   {% endif %}
                              </div></a>
                             <div class="td p-r-hdr">
                                 <div class="p-u-info">
-                                    <a href="#">{{ post.post_owner }}</a> shared a memory with <a href="#">Scope</a>
+                                    <a href="#">{{ post.post_owner|upper }}</a> shared a memory with <a href="#">Scope</a>
                                 </div>
                                 <div class="p-dt">
                                     <i class="material-icons">{{ post.posted_date }}</i>

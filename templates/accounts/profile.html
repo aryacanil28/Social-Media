@@ -17,8 +17,9 @@
                 <a href="{% url 'profile' %}"><img src="{% static 'images/l2.png' %}" alt="AAdmug" width="50px" ></a>
             </div>
             <div class="td" id="search-form">
-                <form method="get" action="#">
-                    <input type="text" placeholder="Search AAdmug">
+                <form method="post" action="{% url 'search' %}">
+                    {% csrf_token %}
+                    <input type="text" placeholder="Search AAdmug" name="name">
                     <button type="submit"><i class="fa fa-search" aria-hidden="true"></i></button>
                 </form>
             </div>

@@ -17,9 +17,10 @@
                 <a href="{% url 'profile' %}"><img src="{% static 'images/l2.png' %}" alt="AAdmug" width="50px" ></a>
             </div>
             <div class="td" id="search-form">
-                <form method="get" action="#">
-                    <input type="text" placeholder="Search AAdmug">
-                    <button type="submit"><i class="material-icons"></i></button>
+               <form method="post" action="{% url 'search' %}">
+                    {% csrf_token %}
+                    <input type="text" placeholder="Search AAdmug" name="name">
+                    <button type="submit"><i class="fa fa-search" aria-hidden="true"></i></button>
                 </form>
             </div>
             <!-- <div class="td" id="f-name-l"><span>Himalaya's facebook</span></div> -->
@@ -48,7 +49,7 @@
                         </a>
                     </div>
                      <div class="td">
-                        <a href="#">
+                        <a href="{% url 'logout' %}">
                             <i class="fas fa-sign-out-alt"></i>
                         </a>
                     </div>
@@ -101,11 +102,11 @@
                     <div class="post">
                         <div class="tb">
                             <a href="#" class="td p-p-pic"> <div class="circle" style="width:50px; height:50px;border-radius:100%;overflow: hidden;">
-                             <img src="{{ data.profile_pic.url }}" class="avatar img-circle  " style=" width:50px; height:50px;object-fit:cover;"  alt="avatar">
+                             <img src="/static/images/l2.png" class="avatar img-circle  " style=" width:50px; height:50px;object-fit:cover;"  alt="avatar">
                              </div></a>
                             <div class="td p-r-hdr">
                                 <div class="p-u-info">
-                                    <a href="#">Scope</a> shared a memory with <a href="#">Suffix</a>
+                                    <a href="#">AAdmug</a>
                                 </div>
                                 <div class="p-dt">
                                     <i class="material-icons">calendar_today</i>

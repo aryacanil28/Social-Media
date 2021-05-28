@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'notifications',
     'posts',
     'faceshield',
+    'search'
 ]
 
 MIDDLEWARE = [
